@@ -12,8 +12,7 @@ if($_SERVER["REQUEST_METHOD"] == "GET"){
         $s->setFetchMode(PDO::FETCH_ASSOC);
         $r = $s->fetch();
         if($r){
-            $t=JWT::create(["user"=>$_GET["user"], "rol"=>$r['rol']], 
-                Config::SECRET);
+            $t = JWT::create(["user" => $_GET["user"], "rol" => $r['rol']], Config::SECRET);
             $result = ["login" => "y", "token" => $t];
         }else{
             $result = array("login" => "n", "token" => "Error");
