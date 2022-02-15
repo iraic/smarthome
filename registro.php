@@ -50,8 +50,44 @@ switch($metodo){
         }
         break;
     case 'PUT':
+        if(isset($_GET['id']) && isset($_GET['user']) && isset($_GET['sensor']) && isset($_GET['valor']) && isset($_GET['fecha'])){
+            $c = conexion();
+            $s = $c->prepare("UPDATE registro SET user = :u, sensor = :s, valor = :v, fecha = :f WHERE id = :id");
+            $s->bindValue(":u", $_GET['user']);
+            $s->bindValue(":s", $_GET['sensor']);
+            $s->bindValue(":v", $_GET['valor']);
+            $s->bindValue(":f", $_GET['fecha']);
+            $s->bindValue(":id", $_GET['id']);
+            $s->execute();
+            if($s->rowCount()>0){
+                header("http/1.1 200 ok");
+                echo json_encode(array("update" => "y"));
+            }else{
+                header("http/1.1 400 bad request");
+                echo json_encode(array("update" => "n"));
+            }
+        }else{
+            header("HTTP/1.1 400 Bad Request");
+            echo "Faltan datos";
+        }
         break;
     case 'DELETE':
+        if(isset($_GET['id'])){
+            $c = conexion();
+            $s = $c->prepare("DELETE FROM registro WHERE id = :id");
+            $s->bindValue(":id", $_GET['id']);
+            $s->execute();
+            if($s->rowCount()>0){
+                header("http/1.1 200 ok");
+                echo json_encode(array("delete" => "y"));
+            }else{
+                header("http/1.1 400 bad request");
+                echo json_encode(array("delete" => "n"));
+            }
+        }else{
+            header("HTTP/1.1 400 Bad Request");
+            echo "Faltan datos";
+        }
         break;
     default:
         header("HTTP/1.1 405 Method Not Allowed");
